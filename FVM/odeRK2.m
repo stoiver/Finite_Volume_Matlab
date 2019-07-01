@@ -47,7 +47,7 @@ while time < tInterval(2),
   
   q = q2;  
   time = time + dtime;
-  fprintf('%8.5e ',dtime)
+  %fprintf('%8.5e ',dtime)
   if i > ODE_MAXIT
     fprintf('\n')
     disp('Max no of sub time steps, Reset i to zero to continue')

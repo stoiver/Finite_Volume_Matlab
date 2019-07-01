@@ -18,7 +18,7 @@ flag = [];
 %--------------------------------------
 time = tInterval(1);
 i = 0;
-while time < tInterval(2),
+while time < tInterval(2)
   i = i+1;
   %---------------------------------
   % First do Advection
@@ -36,7 +36,7 @@ while time < tInterval(2),
   %-----------------
   % Check for negative heights
   %-----------------
-  while (min(qnew(1,:))< 0),
+  while (min(qnew(1,:))< 0)
     fprintf('\n REDUCING TIMESTEP min(h) = %12.5e \n',min(qnew(1,:)));
     %find(qnew(1,:)<0)
     
@@ -64,7 +64,7 @@ while time < tInterval(2),
   % Now some bookkeepping
   %--------------------------------
   time = time + dtime;
-  fprintf('%8.5e ',dtime)
+  %fprintf('%8.5e ',dtime)
   
   if i > ODE_MAXIT
     fprintf('\n')
