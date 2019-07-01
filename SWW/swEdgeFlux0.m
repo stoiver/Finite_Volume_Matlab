@@ -1,4 +1,4 @@
-function [flux,smax] = swEdgeFlux0(ql,qr,normals,eqn,solveops)
+function [flux,smax] = swEdgeFlux0(ql,qr,normals,parms,solveops)
 %
 % function [flux] = swEdgeFlux(ql,qr,normals,eqn,solveops)
 %
@@ -70,7 +70,7 @@ ut_r = -n2.*u_r + n1.*v_r;
 % Calculate normal and tangential 
 % fluxes
 %-------------------------------
-[f,smax] = feval(eqn.riemann,h_l,un_l,ut_l,h_r,un_r,ut_r,solveops);
+[f,smax] = feval(parms.riemann,h_l,un_l,ut_l,h_r,un_r,ut_r,solveops);
 
 %------------------------------
 % Form x,y Components

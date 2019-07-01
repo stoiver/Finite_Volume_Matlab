@@ -6,7 +6,7 @@ node = [-1 -1; 1 -1; 1 1; -1 1];
 elem = [2 3 1; 4 1 3];
 
 
-for i = 1:8% Try different level here. 7 is good.
+for i = 1:7% Try different level here. 7 is good.
     [node,elem] = uniformbisect(node,elem);
 end
 
