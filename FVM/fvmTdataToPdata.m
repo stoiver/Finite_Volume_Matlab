@@ -8,7 +8,7 @@ function [pdata] = fvmTdataToPdata(mesh,tdata,flag)
 % flag = 'lweight' or 'ones'
 
 if nargin == 2 
-  flag = 'lweight';
+  flag = 'ones';
 end
 
 %--------------------------------

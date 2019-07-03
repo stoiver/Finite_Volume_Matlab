@@ -1,5 +1,9 @@
-function [qmid] = fvmLimiter(mesh,solveops,q,qmid)
-
+function [qmid, qv] = fvmLimiter(mesh,solveops,q,qmid)
+%
+% function [qmid, qv] = fvmLimiter(mesh,solveops,q,qmid)
+%
+% Limit the qmid values so that they are limited at
+% the midpoints. 
 
 %---------------------------------------
 % Check flux calculation parameters (fluxops)
@@ -72,6 +76,13 @@ if ~isempty(ii)
 end
    
 
-     
+if nargout>1
+  qv = zeros(size(qmid));
+  for j=1:3
+    j1 = rem(j,3)+1;
+    j2 = rem(j+1,3)+1;
+    qv(:,j,:) = (qmid(:,j2,:)-qmid(:,j,:)+qmid(:,j1,:));
+  end
+end   
 
    

@@ -31,7 +31,7 @@ parms.phiInterpolator = 'fvmPWL0';
 %parms.phiLimiter = 'swLimiter1';
 %parms.phiInterpolator = 'fvmPWL1';
 parms.reactionFunct = 'swReaction';
-parms.beta = 0.5;
+parms.beta = 0.9;
 parms.delta = 1e-5;
 
 %-------------------------------------
@@ -52,19 +52,22 @@ parms.g = 9.8;
 parms.DT = DT;
 parms.finalT = finalT;
 parms.dtmin = 1e-7;
-parms.odetype = 'odeEuler1';
+%parms.odetype = 'odeEuler1';
+parms.odetype = 'adaptOdeEuler1';
 %parms.odetype = 'odeRK2';
 %parms.odetype = 'odeHarten2';
 
-
+%-------------------------------------
+% Graphics paramters
+%-------------------------------------
 parms.graphics = 1;
-
+parms.smooth = 0;
 fvmSetPlotRange([0 ; 2]);
 
 %-------------------------------------
 % Now do the actual computation
 %-------------------------------------
-[parms,mesh,qT] = fvmMain(parms);
+[parms,mesh,qT] = adaptMain(parms);
 
 
 
