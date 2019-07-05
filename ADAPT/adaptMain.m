@@ -46,15 +46,7 @@ end
 %----------------------------------------
 % Computation start
 %----------------------------------------
-nt = size(mesh.t,2)
-np = size(mesh.p,2)
-
-
-mesh = fvmNeigh(mesh,'ifnecessary');
-mesh = fvmAreaTri(mesh,'ifnecessary');
-mesh = fvmNormals(mesh,'ifnecessary');
-mesh = fvmDiameters(mesh,'ifnecessary');
-parms.dx = min(mesh.diameters);
+parms.init_res = mesh.dxmin;
 
 DT = parms.DT;
 finalT = parms.finalT;
@@ -70,8 +62,8 @@ rint = intq;
 
 
 fprintf('TIME %g \n',startT)
-fprintf('  nt = %g \n',nt)
-fprintf('  np = %g \n',np)
+fprintf('  nt = %g \n',mesh.nt)
+fprintf('  np = %g \n',mesh.np)
 fprintf('  IntQ = %12.8e \n',intq)
 fprintf('  max value = %g \n',maxq)
 fprintf('  min value = %g \n',minq)
@@ -110,14 +102,15 @@ for time = startT+DT:DT:finalT
    rtime =[rtime time];
    
    fprintf('TIME %g \n',time)
-   fprintf('  nt = %g \n',nt)
-   fprintf('  np = %g \n',np)
+   fprintf('  nt = %g \n',mesh.nt)
+   fprintf('  np = %g \n',mesh.np)
    fprintf('  IntQ = %12.8e \n',intq)
    fprintf('  max value = %g \n',maxq)
    fprintf('  min value = %g \n',minq)
    
    if parms.graphics
      fvmPlotTriSurf(mesh,q,parms);
+     fvmPlotMesh(mesh,2);
    end
    inc = inc + 1;
    qT{inc} = q;
@@ -133,8 +126,6 @@ parms.maxq = rmax;
 parms.minq = rmin;
 parms.int = rint;
 parms.time = rtime;
-parms.nt = nt;
-parms.np = np;
 parms.inc = inc;
 
 

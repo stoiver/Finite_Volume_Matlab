@@ -1,6 +1,20 @@
-function [time,q, mesh] = adaptOdeEuler1(tInterval,q,options,parms,mesh,f2)
+function [time,q,mesh] = adaptOdeEuler1(tInterval,q,options,parms,mesh,f2)
 %
-% 
+% [time,q,mesh] = AdaptOdeEuler1(tInterval,q,options,parms,mesh,f2)
+%
+% Update q using first order Euler method, with inner
+% timestep controlled by the wave speeds as calculated by 
+% the flux function parms.fluxFunct
+%
+% After each Euler update, determine triangles to be adapted. The adapted
+% q and mesh are returned. 
+%
+% The arguements options, f2 are added to be consistent with the 
+% matlab ode solvers. mesh is using the f1 slot of the standard 
+% matlab ode solver.
+%
+
+
 global ODE_MAXIT
 
 if size(tInterval,2)~=2
@@ -27,7 +41,7 @@ flag = [];
 %--------------------------------------
 time = tInterval(1);
 i = 0;
-while time < tInterval(2),
+while time < tInterval(2)
   i = i+1;
   %---------------------------------
   % First do Advection
@@ -49,9 +63,10 @@ while time < tInterval(2),
   % Based on advection update 
   % refine/coarsen mesh
   %--------------------------------
-  %[q, mesh]  = adaptRefineCoarsen(q,mesh,parms,dtime,qnew);
+  [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
+  [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
  
-  q = qnew;
+  %q = qnew;
   %---------------------------------
   % Now do slope using explicit method
   %---------------------------------
