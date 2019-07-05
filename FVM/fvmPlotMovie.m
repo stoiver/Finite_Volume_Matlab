@@ -1,24 +1,41 @@
-function fvmPlotMovie(parms,m,qT,scale,range)
+function fvmPlotMovie(parms,mT,qT,scale,range)
 %
-% function fvmPlotMovie(parms,m,qT,scale,range)
+% function fvmPlotMovie(parms,mT,qT,scale,range)
 %
-% Plot the evolution defined by r,m,qT
+% Plot the evolution defined by r,mT,qT
 % as created by fvm main program
 %
 % Can also set the vertical range of the plot
 % using scale. Otherwise the scale is set to the min and
 % max of the first component of the initial qT
 
+if ~iscell(qT)
+    error('qT should be a cell array with time evolution of q')
+end
+
+if ~iscell(mT)
+    m = mT;
+end
+    
+
 maxinc = parms.inc;
 
 for inc = 1:maxinc
   q = qT{inc};
+  if iscell(mT)
+      m = mT{inc}
+  end
+  
   time = (inc-1)*parms.DT;
   intq = fvmIntQ(m,q);
   maxq = max(q,[],2);
   minq = min(q,[],2);
+  m.nt = size(m.t,2);
+  m.np = size(m.p,2);
    
   fprintf('TIME %g \n',time)
+  fprintf('  nt = %g \n',m.nt)
+  fprintf('  np = %g \n',m.np)
   fprintf('  IntQ = %12.8e \n',intq)
   fprintf('  max value = %g \n',maxq)
   fprintf('  min value = %g \n',minq)

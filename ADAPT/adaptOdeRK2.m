@@ -1,6 +1,6 @@
-function [time,q] = odeEuler1(tInterval,q,options,parms,mesh,f2)
+function [time,q,mesh] = adaptOdeRK2(tInterval,q,options,parms,mesh,f2)
 %
-% [time,q] = odeEuler1(tInterval,q,options,parms,f1,f2)
+% [time,q,mesh] = adaptOdeRK2(tInterval,q,options,parms,mesh,f2)
 %
 % Update q using first order Euler method, with inner
 % timestep controlled by the wave speeds as calculated by 
@@ -9,8 +9,6 @@ function [time,q] = odeEuler1(tInterval,q,options,parms,mesh,f2)
 % options, f2 are added to be consistent with the matlab ode solvers. 
 % mesh is using the f1 slot of the standard matlab ode solvers
 %
-
-
 
 global ODE_MAXIT
 
@@ -22,14 +20,6 @@ DT = parms.DT;
 dtmin = parms.dtmin;
 
 fprintf('\n');
-%-------------------------------------
-% Ensure times are consistent with dt
-% and tInterval
-%-------------------------------------
-%times = tInterval(1):dt:tInterval(2);
-%if times(end)-tInterval(2)<0.0
-%   times = [times , tInterval(2)];
-%end 
 
 flag = [];
 
@@ -38,33 +28,31 @@ flag = [];
 %--------------------------------------
 time = tInterval(1);
 i = 0;
-while time < tInterval(2),
+while time < tInterval(2)
   i = i+1;
-  %---------------------------------
-  % First do Advection
-  %---------------------------------
-  [flux,smax] = feval(parms.fluxFunct,time,q,flag,parms,mesh);
+  [flux0,smax0] = feval(parms.fluxFunct,time,q,flag,parms,mesh);
   dx = mesh.diameters;
-  %max(smax)
-  dtime = min(max(min(dx./smax,DT),dtmin),tInterval(2)-time);
+  smax0 = smax0+1e-10;
+  dtime = min(max(min(dx./smax0,DT),dtmin),tInterval(2)-time);
   dtime = min(dtime,[],2);
-  qnew = q + dtime*flux;
-
-  %-----------------
-  % Check for negative heights
-  %-----------------
-  while (min(qnew(1,:))< 0),
-    fprintf('\n REDUCING TIMESTEP min(h) = %12.5e \n',min(qnew(1,:)));
-    %find(qnew(1,:)<0)
-    
-    %keyboard
-
-    dtime = dtime/2.0;
-    qnew = q + dtime*flux;
-  end
   
-  q = qnew; 
+  q1 = q + dtime*flux0;
+  [flux1,smax1] = feval(parms.fluxFunct,time,q1,flag,parms,mesh);
+  qnew = 0.5*q + 0.5*q1 + 0.5*dtime*flux1;
   
+  %-----------------
+  % Fix negative heights
+  %-----------------
+  ipos = qnew(1,:) >= 0;
+  qnew = qnew.*ipos;
+  
+  %--------------------------------
+  % Based on advection update 
+  % refine/coarsen mesh
+  %--------------------------------
+  [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
+  [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
+ 
   %---------------------------------
   % Now do slope using explicit method
   %---------------------------------
@@ -91,15 +79,6 @@ while time < tInterval(2),
     q = q./(1-dtime*dqoverq);
   end
   
-  
-  %[np,nt] = size(q);
-  %yy = reshape(q,np*nt,1);
-  
-  %[tt,yy] = ode23('fvmOdeFunct',[time time+dtime],...
-  %    yy,flag,parms,f1,np,nt);
-  %fprintf(' %g ',size(yy,1));
-  %q = reshape(yy(end,:),3,nt);
-  
   %--------------------------------
   % Now some bookkeepping
   %--------------------------------
@@ -112,12 +91,7 @@ while time < tInterval(2),
     keyboard
   end
 end
+      
 
-%for i=2:size(times,2)
-%   time = times(i);
-%   dtime = times(i)-times(i-1);
-%   [flux,smax] = feval(fun,time,q,flag,f1);
-%   q = q + dtime*flux;
-%end      
-
+%smax = max(smax0,smax1);
 fprintf('\n');

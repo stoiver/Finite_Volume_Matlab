@@ -40,17 +40,10 @@ end
 %-------------------------------------------
 % Start evolution
 %-------------------------------------------
-nt = size(mesh.t,2)
-np = size(mesh.p,2)
+nt = mesh.nt;
+np = mesh.np;
 
-
-mesh = fvmNeigh(mesh,'ifnecessary');
-mesh = fvmAreaTri(mesh,'ifnecessary');
-mesh = fvmNormals(mesh,'ifnecessary');
-mesh = fvmDiameters(mesh,'ifnecessary');
-
-
-parms.dx = min(mesh.diameters);
+%parms.dx = min(mesh.diameters);
 
 if nargin == 1
   inc = 1;

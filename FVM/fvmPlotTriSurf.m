@@ -1,10 +1,15 @@
-function fvmPlotTriSurf(mesh,q,parms)
+function fvmPlotTriSurf(mesh,q,parms,fig_no)
 %
-% fvmPlotTriSurf(mesh,q,parms)
+% fvmPlotTriSurf(mesh,q,parms,fig_no)
 %
 % Plot a triangular mesh with concentration given by
 % q(dim,:), Default dim = 1
 %
+
+if nargin < 4
+  fig_no = 1;
+end 
+
 if nargin < 3
   parms = fvmSetParmsStruct;
   parms.plotdim = 1;
@@ -34,6 +39,8 @@ if smooth == 1
      pqe = pq;
   end
 
+  figure(fig_no)
+  
   trisurf(mesh.t',mesh.p(1,:),mesh.p(2,:),pqe,pq,'EdgeColor','none')
   shading interp
 
@@ -56,6 +63,7 @@ else
   Z = [mesh.elevation(mesh.t(1,:)) ; mesh.elevation(mesh.t(2,:)) ;...
     mesh.elevation(mesh.t(3,:)) ]+C;
   
+  figure(fig_no)
   clf;
   patch(X,Y,Z,C,'FaceColor','interp','EdgeColor','none');
 

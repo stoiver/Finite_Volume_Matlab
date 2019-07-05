@@ -21,6 +21,9 @@ end
 
 if strcmp(flag,'ifnecessary')
   if ~isempty(mesh.area)
+    if ~isempty(mesh.areamin)
+      mesh.areamin = min(mesh.area);
+    end
     return
   end
 end
@@ -39,4 +42,8 @@ x3 = mesh.p(1,mesh.t(3,:));
 y3 = mesh.p(2,mesh.t(3,:));
 
 mesh.area = 0.5* ( x1.*y2 + x2.*y3 + x3.*y1 - x1.*y3 - x2.*y1 - x3.*y2 );
+
+mesh.areamin = min(mesh.area); 
+
+end
 
