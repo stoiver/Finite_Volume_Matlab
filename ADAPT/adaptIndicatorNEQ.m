@@ -6,6 +6,10 @@ function [indicator, tol_indicator]  = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew
 
 g = parms.g; 
 
+
+
+nt = mesh.nt;
+
 h0  = q(1,:);
 uh0 = q(2,:);
 vh0 = q(3,:);
@@ -13,6 +17,9 @@ vh0 = q(3,:);
 u0  = uh0./h0;
 v0  = vh0./h0;
 entropy_before = 0.5*h0.*(u0.^2+v0.^2) + 0.5*g*h0.^2;
+
+
+
 
 h1  = qnew(1,:);
 uh1 = qnew(2,:);

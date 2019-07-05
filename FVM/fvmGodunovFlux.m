@@ -13,7 +13,7 @@ global FVM_K
 % For each triangle calculate the 
 % flux across each edge and accumulate 
 % into flux for triangle
-% Weight each flux by the length 
+% Weight each flux by the length qmid
 % of the edge
 %------------------------------
 mesh = fvmNeigh(mesh,'ifnecessary');

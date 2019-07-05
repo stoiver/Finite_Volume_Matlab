@@ -1,6 +1,6 @@
-function [flux,smax] = swFluxFunct1(time,q,flag,parms,mesh)
+function [flux,smax,qmid] = swFluxFunct1(time,q,flag,parms,mesh)
 %
-%  [flux,smax,s] = swFluxFunct1(time,q,parms,mesh)
+%  [flux,smax] = swFluxFunct1(time,q,parms,mesh)
 %
 % Calculate the the flux on the piecewise constant concentration q
 % using the flux function passed via the eqn argument (eqn.fluxFunct)
@@ -20,7 +20,7 @@ end
 %---------------------------------------
 % Check mesh infomation
 %---------------------------------------
-if isempty(mesh.p) | isempty(mesh.t)
+if isempty(mesh.p) || isempty(mesh.t)
   error('Mesh information not passed correctly')
 end
 
