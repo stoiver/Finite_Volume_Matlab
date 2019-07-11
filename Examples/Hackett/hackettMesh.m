@@ -3263,6 +3263,8 @@ mesh.elevation = pp(:,3)';
 mesh.friction = 0.03*(mesh.elevation>630) + (1-(mesh.elevation>630))*0.1;
 mesh.geometry = 'hackett';
 mesh = fvmDiameters(mesh);
+mesh.nt = size(mesh.t,2);
+mesh.np = size(mesh.p,2);
 
 %----------------------------
 % lets put depth into triangle

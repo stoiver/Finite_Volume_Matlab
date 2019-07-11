@@ -24,8 +24,8 @@ q(1,:) = depth;
 height = max(q(1,:),[],2);
 
 
-fvmSetPlotScale([0 height])
-fvmSetPlotRange([610 660])
+fvmSetPlotScale([0 height]);
+fvmSetPlotRange([610 660]);
 
 %-------------------
 % Set up transmissive boundaries
@@ -48,6 +48,10 @@ end
 %mesh.tneigh(:,iii)
 %mesh.tneigh(:,jjj)
 
+%------------------------------
+% Create a circular dam wall with 
+% a break
+%------------------------------
 for i=1:3
   ii = find(mesh.tneigh(i,:)>0);
   %size(ii)
@@ -69,11 +73,11 @@ for i=1:3
 end
 
 mesh.tneigh(1,iii) = jjj;
-depth(iii)
-mesh.t(:,iii)
+% depth(iii)
+% mesh.t(:,iii)
 mesh.tneigh(1,jjj) = iii;
-depth(jjj)
-mesh.t(:,jjj)
-mesh.tneigh(:,iii)
-mesh.tneigh(:,jjj)
+% depth(jjj)
+% mesh.t(:,jjj)
+% mesh.tneigh(:,iii)
+% mesh.tneigh(:,jjj)
 return

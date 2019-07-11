@@ -34,6 +34,7 @@ parms.odetype = [];
 parms.graphics = 1;
 parms.plotelevation = 1;
 parms.plotdim = 1;
+parms.smooth = 1;
 
 
 return

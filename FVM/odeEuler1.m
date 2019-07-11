@@ -51,19 +51,11 @@ while time < tInterval(2),
   qnew = q + dtime*flux;
 
   %-----------------
-  % Check for negative heights
+  % Fix negative heights
   %-----------------
-  while (min(qnew(1,:))< 0),
-    fprintf('\n REDUCING TIMESTEP min(h) = %12.5e \n',min(qnew(1,:)));
-    %find(qnew(1,:)<0)
-    
-    %keyboard
-
-    dtime = dtime/2.0;
-    qnew = q + dtime*flux;
-  end
-  
-  q = qnew; 
+  ipos = qnew(1,:) >= 0;
+  q = qnew.*ipos;
+   
   
   %---------------------------------
   % Now do slope using explicit method
