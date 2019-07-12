@@ -1,4 +1,4 @@
-function [parms,mesh,qT] = swMain0(parms,mesh,qT)
+function [parms,mesh,qT] = swtMain0(parms,mesh,qT)
 %
 %
 
@@ -30,6 +30,7 @@ initT = parms.time(end);
 finalT = initT+5.0;
 
 q = qT{parms.inc};
+parms.nd = size(q,2);
 
 intq = fvmIntQ(mesh,q);
 maxq = max(q,[],2)

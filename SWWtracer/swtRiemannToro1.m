@@ -1,9 +1,10 @@
-function [f,smax] = swRiemannToro1(Tql,Tqr,parms)
+function [f,smax] = sweRiemannToro1(Tql,Tqr,parms)
 %
-% function [f,smax] = swRiemannToro1(Tql,Tqr,parms)
+% function [f,smax] = sweRiemannToro1(Tql,Tqr,parms)
 %
 % Approximate Riemann Solver for 2-d Shallow Water 
-% equations using first order scheme by Fraccarollo and Toro,
+% equations with tracer using first order scheme 
+% by Fraccarollo and Toro,
 % J. Hydr. Research, 33(6), 1995, 843-864.
 % Dry bed case
 %
@@ -13,23 +14,38 @@ function [f,smax] = swRiemannToro1(Tql,Tqr,parms)
 global FVM_K
 
 g = parms.g;
+nd = parms.nd;
+
 
 hl  = Tql(1,:);
 uhl = Tql(2,:);
 whl = Tql(3,:);
 
+if nd > 3
+    chl = Tql(4:nd,:);
+else
+    chl = [];
+end
+
 hr  = Tqr(1,:);
 uhr = Tqr(2,:);
 whr = Tqr(3,:);
 
+if nd > 3
+    chr = Tqr(4:nd,:);
+else
+    chr = [];
+end
+
+
 %-----------------------------
-% Put into h,u,w variables
+% Put into h,u,w, c variables
 % Ensure that we don't have
 % very small h values
 %-----------------------------
 
-[hl,ul,wl] = swTransformHUW(hl,uhl,whl,parms);
-[hr,ur,wr] = swTransformHUW(hr,uhr,whr,parms);
+[hl,ul,wl,cl] = swtTransformHUW(hl,uhl,whl,chl, parms);
+[hr,ur,wr,cr] = swtTransformHUW(hr,uhr,whr,chr, parms);
 
 %-----------------------------
 % Calculate Shock Speeds
@@ -91,6 +107,7 @@ f2(dn)=ul(dn).*ul(dn).*hl(dn) + g*hl(dn).*hl(dn)/2.0;
 %------------------------
 f1(sb)=(sr(sb).*ul(sb).*hl(sb) - sl(sb).*ur(sb).*hr(sb) + ...
     sl(sb).*sr(sb).*(hr(sb)-hl(sb)))./(sr(sb)-sl(sb));
+
 f2(sb)=(sr(sb).*(ul(sb).*ul(sb).*hl(sb) + g*hl(sb).*hl(sb)/2.0) - ...
     sl(sb).*(ur(sb).*ur(sb).*hr(sb) + g.*hr(sb).*hr(sb)/2.0) + ...
     sl(sb).*sr(sb).*(ur(sb).*hr(sb) - ul(sb).*hl(sb)))./(sr(sb)-sl(sb));
@@ -101,17 +118,29 @@ f2(sb)=(sr(sb).*(ul(sb).*ul(sb).*hl(sb) + g*hl(sb).*hl(sb)/2.0) - ...
 %w(ws)=wr(ws);
 
 
+
+sm0 = find(sm < 0.0);
+
 w=wl;
-ws = find(sm < 0.0);
-w(ws)=wr(ws);
+w(sm0)=wr(sm0);
 f3=f1.*w;
 
 f = [f1;f2;f3];
 
+if nd > 3
+    for i=1:nd-3
+      c = cl(i,:);
+      c(sm0)=cr(i,sm0);
+      f4 = f1.*c;
+      f = [f;f4];
+    end
+end
+
 if FVM_K > 0
-  fprintf(' max(f1) = %12.5e min(f1) = %12.5e \n',max(f1),min(f1))
-  fprintf(' max(f2) = %12.5e min(f2) = %12.5e \n',max(f2),min(f2))
-  fprintf(' max(f3) = %12.5e min(f3) = %12.5e \n',max(f3),min(f3))
+  for i=1:nd
+    fprintf(' max(f%g) = %12.5e min(f%g) = %12.5e \n', ...
+        i,i,max(f(i,:)),min(f(i,:)))
+  end
   
   fprintf(' max(sl) = %12.5e min(sl) = %12.5e \n',max(sl),min(sl))
   fprintf(' max(sm) = %12.5e min(sm) = %12.5e \n',max(sm),min(sm))
@@ -119,7 +148,7 @@ if FVM_K > 0
   
 end
 
-if any(sl>sm) | any(sm>sr)
+if any(sl>sm) || any(sm>sr)
   error('sl > sm or sm > sr ')
 end
 

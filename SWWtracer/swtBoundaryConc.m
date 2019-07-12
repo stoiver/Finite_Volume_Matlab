@@ -1,4 +1,4 @@
-function [qr] = swBoundaryConc(ql,normals,flags)
+function [qr] = swtBoundaryConc(ql,normals,flags)
 %
 % function [qr] = swBoundaryConc(ql,normals,flags)
 %
@@ -8,7 +8,7 @@ function [qr] = swBoundaryConc(ql,normals,flags)
 
 nd = size(ql,1); 
 
-Tql = swRotate(ql,normals);
+Tql = swtRotate(ql,normals);
 Tqr = zeros(size(ql));
 
 %--------------------------
@@ -44,5 +44,5 @@ end
 %---------------------------
 %  Transform back to xy coords
 %---------------------------
-qr = swInvRotate(Tqr,normals);
+qr = swtInvRotate(Tqr,normals);
 

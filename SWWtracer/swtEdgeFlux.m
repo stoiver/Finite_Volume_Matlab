@@ -1,6 +1,6 @@
-function [flux,smax] = swEdgeFlux(ql,qr,normals,parms)
+function [flux,smax] = swtEdgeFlux(ql,qr,normals,parms)
 %
-% function [flux] = swEdgeFlux(ql,qr,normals,parms)
+% function [flux] = swtEdgeFlux(ql,qr,normals,parms)
 %
 % Calculate the flux across an edge with normal n, using Riemann solver
 % passed by eqn.riemann
@@ -11,8 +11,8 @@ function [flux,smax] = swEdgeFlux(ql,qr,normals,parms)
 % directions
 %----------------------------
 
-Tql = swRotate(ql,normals);
-Tqr = swRotate(qr,normals);
+Tql = swtRotate(ql,normals);
+Tqr = swtRotate(qr,normals);
 
 %-------------------------------
 % Calculate normal and tangential 
@@ -23,7 +23,7 @@ Tqr = swRotate(qr,normals);
 %------------------------------
 % Form x,y flux Components
 %------------------------------
-flux = swInvRotate(f,normals);
+flux = swtInvRotate(f,normals);
 
 
 

@@ -1,6 +1,6 @@
-function [flux,smax,qmid] = swFluxFunct1(time,q,flag,parms,mesh)
+function [flux,smax,qmid] = swtFluxFunct1(time,q,flag,parms,mesh)
 %
-%  [flux,smax] = swFluxFunct1(time,q,parms,mesh)
+%  [flux,smax] = swtFluxFunct1(time,q,parms,mesh)
 %
 % Calculate the the flux on the piecewise constant concentration q
 % using the flux function passed via the eqn argument (eqn.fluxFunct)
@@ -36,13 +36,15 @@ fprintf('.');
 % Do the interpolation on the standard
 % variables
 %---------------------------------------
-qs = swTransformQ(q,parms);
+qs = swtTransformQ(q,parms);
 qmids = feval(parms.phiInterpolator,mesh,parms,qs);
 qmids = feval(parms.phiLimiter,mesh,parms,qs,qmids);
-qmid = swInvTransformQ(qmids,parms);
+qmid = swtInvTransformQ(qmids,parms);
 
 %----------------------------------------
 % Accumulate Flux through each edge
 %----------------------------------------
 [flux,smax] = fvmGodunovFlux(mesh,parms,q,qmid);
+
+
 

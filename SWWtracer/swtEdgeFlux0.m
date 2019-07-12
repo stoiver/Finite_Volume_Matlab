@@ -1,9 +1,9 @@
-function [flux,smax] = swEdgeFlux0(ql,qr,normals,parms,solveops)
+function [flux,smax] = swtEdgeFlux0(ql,qr,normals,parms,solveops)
 %
-% function [flux] = swEdgeFlux(ql,qr,normals,eqn,solveops)
+% function [flux] = swtEdgeFlux(ql,qr,normals,eqn,solveops)
 %
 % Calculate the flux across an edge with normal n, using Riemann solver
-% passed by eqn.riemann
+% passed by eqn.riemann for SW + tracer
 %
 
 %----------------------------
@@ -18,9 +18,18 @@ h_l  = ql(1,:);
 uh_l = ql(2,:);
 vh_l = ql(3,:);
 
+for j = 1:nd-4
+  c_l{j}  = ql(j+3,:);
+end
+
 h_r  = qr(1,:);
 uh_r = qr(2,:);
 vh_r = qr(3,:);
+
+for j = 1:nd-4
+  c_r{j}  = qr(j+3,:);
+end
+
 
 %fprintf(' max(h_l) = %12.5e min(h_l) = %12.5e \n',max(h_l),min(h_l))
 %fprintf(' max(uh_l) = %12.5e min(uh_l) = %12.5e \n',max(uh_l),min(uh_l))
@@ -39,6 +48,7 @@ vh_r = qr(3,:);
 epsilon = 1e-10;
 h_l = (h_l>epsilon).*h_l;
 h_r = (h_r>epsilon).*h_r;
+
 
 jj = find(h_l>0);
 u_l = zeros(1,nt);
@@ -71,7 +81,7 @@ ut_r = -n2.*u_r + n1.*v_r;
 % Calculate normal and tangential 
 % fluxes
 %-------------------------------
-[f,smax] = feval(parms.riemann,h_l,un_l,ut_l,h_r,un_r,ut_r,solveops);
+[f,smax] = feval(parms.riemann,h_l,un_l,ut_l,c_l, h_r,un_r,ut_r,c_r,solveops);
 
 %------------------------------
 % Form x,y Components
@@ -82,5 +92,8 @@ flux(1,:) = f(1,:);
 flux(2,:) = f(2,:).*n1 - f(3,:).*n2;
 flux(3,:) = f(2,:).*n2 + f(3,:).*n1;
 
+for j = 1:nd-4
+  flux(j+3,:) = f(j+3,:);
+end
 
 

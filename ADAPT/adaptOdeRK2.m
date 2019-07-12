@@ -50,8 +50,12 @@ while time < tInterval(2)
   % Based on advection update 
   % refine/coarsen mesh
   %--------------------------------
-  [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
-  [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
+  if parms.adapt == 1
+    [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
+    [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
+  else
+      q = qnew;
+  end
  
   %---------------------------------
   % Now do slope using explicit method

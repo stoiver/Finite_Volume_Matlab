@@ -1,6 +1,6 @@
-function swCaseMovie(r,m,qT,scale)
+function swtCaseMovie(r,m,qT,scale)
 %
-% function swCaseMovie(r,m,qT,scale)
+% function swtCaseMovie(r,m,qT,scale)
 %
 % Plot the evolution defined by r,m,qT
 % as created by fvm main program

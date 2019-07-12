@@ -7,6 +7,8 @@ function [qnew, meshnew]  = adaptRefineCoarsen(q,mesh,parms,indicator,tol_indica
 % new mesh, meshnew. 
 
 
+nd = parms.nd;
+
 % Need to transpose to be consistent with ifem ordering
 indicator = indicator';
 
@@ -30,8 +32,8 @@ elem = mesh.t';
 ntf = size(elem,1);  %number of triangles after refinement
 %fprintf('refine ntf = %g \n',ntf);
 
-qref = zeros(ntf,3);
-for ii = 1:3
+qref = zeros(ntf,nd);
+for ii = 1:nd
     qref(:,ii) = eleminterpolate(q(ii,:)',tree);
 end
 indicator = eleminterpolate(indicator,tree);
@@ -41,14 +43,14 @@ indicator = eleminterpolate(indicator,tree);
 % for refinement then refine and 
 % interpolate to refined mesh
 %----------------------------------
-coarsenElem = find(abs(indicator) < 0.5*tol_indicator);
+coarsenElem = find(abs(indicator) < 0.2*tol_indicator);
 fprintf('|coarsenElem| = %g \n',size(coarsenElem,1));
 
 [node,elem,~,~,tree] = coarsen(node,elem, coarsenElem, []);
 
 ntc = size(elem,1);  %number of triangles after coarsen
-qnew = zeros(3,ntc);
-for ii = 1:3
+qnew = zeros(nd,ntc);
+for ii = 1:nd
     qnew(ii,:) = eleminterpolate(qref(:,ii),tree)';
 end
 %indicator = eleminterpolate(indicator,tree);

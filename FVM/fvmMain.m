@@ -56,9 +56,12 @@ else
   rtime = parms.time;
 end
 
+
 DT = parms.DT;
 finalT = parms.finalT;
 q = qT{inc};
+
+parms.nd = size(q,1);
 
 intq = fvmIntQ(mesh,q);
 maxq = max(q,[],2);

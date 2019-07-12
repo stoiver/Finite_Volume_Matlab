@@ -25,7 +25,14 @@ mesh.friction  = zeros(1,mesh.np);
 centroid = fvmCentroid(mesh);
 disk = (centroid(1,:).^2 + centroid(2,:).^2 ) < 0.25^2;
 
-q  = zeros(3,mesh.nt);
+nd = 3;
+q  = zeros(nd,mesh.nt);
 q(1,:) = (1-disk)*0.2 + disk*0.5;
+
+if nd > 3
+  for j = 4:nd
+    q(j,:) = (j-3)*(centroid(j-3,:)<0.25).*q(1,:);
+  end
+end
 
 end

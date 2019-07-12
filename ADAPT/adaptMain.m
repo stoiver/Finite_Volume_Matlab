@@ -47,6 +47,7 @@ end
 % Computation start
 %----------------------------------------
 parms.init_res = mesh.dxmin;
+parms.nd = size(q,1);
 
 DT = parms.DT;
 finalT = parms.finalT;
@@ -105,7 +106,9 @@ for time = startT+DT:DT:finalT
    fprintf('  nt = %g \n',mesh.nt)
    fprintf('  np = %g \n',mesh.np)
    fprintf('  IntQ = %12.8e \n',intq)
+   fprintf('\n')
    fprintf('  max value = %g \n',maxq)
+   fprintf('\n')
    fprintf('  min value = %g \n',minq)
    
    if parms.graphics

@@ -1,31 +1,23 @@
-function [qs] = swTransformQ(qc,parms)
+function [qs] = swtTransformQ(qc,parms)
 %
-% function [qs] = swTransformHUW(qc,parms)
+% function [qs] = swtTransformQ(qc,parms)
 %
-% Transform between conserved (qc = [h uh vh c ..])
+% Transform between conserved (qc = [h uh vh hc ..])
 % and standard variables (qs = [h u v c ..]) for the 
 % shallow water equations
-nd = parms.nd;
 
-sizeqc = size(qc);
-extra = prod(sizeqc)/nd;
-qc = reshape(qc,[nd extra]);
-nt = size(qc,2);
+
 epsilon = parms.delta;
-qs(1,:) = (qc(1,:)>epsilon).*qc(1,:);
 
-jj = find(qs(1,:)>0);
+qs = zeros(size(qc));
 
-qs(2,:) = zeros(1,nt);
-qs(2,jj) = qc(2,jj)./qs(1,jj);
-qs(3,:) = zeros(1,nt);
-qs(3,jj) = qc(3,jj)./qs(1,jj);
+h = qc(1,:);
+h = max(0.0, h);
 
-for j = 4:nd
-   qs(j,:) = zeros(1,nt);
-   qs(j,jj) = qc(j,jj); 
-end
+hf = 2.0*h./(h.^2 + (max(epsilon, h)).^2);
 
-qs = reshape(qs,sizeqc);
+qs(1,:) = h;
+qs(2:end,:) = qc(2:end,:).*hf;
+
 
 return

@@ -21,30 +21,31 @@ parms = fvmSetParmsStruct;
 % shallow water equation
 % Probably dont want to change these
 %----------------------------
-parms.edgeFlux = 'swEdgeFlux';
-parms.boundaryConc = 'swBoundaryConc';
-parms.riemann = 'swRiemannToro1';
-parms.dirBCFunct = 'swExact';
-parms.flux  = 'swFlux';
-parms.fluxFunct = 'swFluxFunct1';
-parms.simpleFluxFunct = 'swSimpleFlux1';
+parms.edgeFlux = 'swtEdgeFlux';
+parms.boundaryConc = 'swtBoundaryConc';
+parms.riemann = 'swtRiemannToro1';
+parms.dirBCFunct = 'swtExact';
+parms.flux  = 'swtFlux';
+parms.fluxFunct = 'swtFluxFunct1';
+parms.simpleFluxFunct = 'swtSimpleFlux1';
 
 order = 2;
 if order == 1
-  parms.phiLimiter = 'swLimiter0';
+  parms.phiLimiter = 'swtLimiter0';
   parms.phiInterpolator = 'fvmPWL0';
   parms.odetype = 'adaptOdeEuler1';
 elseif order == 2
-  parms.phiLimiter = 'swLimiter1';
+  parms.phiLimiter = 'swtLimiter1';
   parms.phiInterpolator = 'fvmPWL1';
   parms.odetype = 'adaptOdeRK2';
 else
   error('Order should equal 1 or 2')
 end
-parms.reactionFunct = 'swReaction';
+parms.reactionFunct = 'swtReaction';
 
 parms.beta = 0.9;
 parms.delta = 1e-5;
+parms.adapt = 1;
 
 %-------------------------------------
 % Paraters to change initial conditions
@@ -69,7 +70,7 @@ parms.dtmin = 1e-7;
 % Graphics paramters
 %-------------------------------------
 parms.graphics = 1;
-parms.smooth = 0;
+parms.smooth = 1;
 parms.plotdim = 1;
 fvmSetPlotRange([0 ; 2]);
 

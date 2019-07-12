@@ -19,14 +19,17 @@ global FVM_K
 mesh = fvmNeigh(mesh,'ifnecessary');
 mesh = fvmNormals(mesh,'ifnecessary');
 flux = zeros(size(q));
-testflux = zeros(3,3,size(q,2));
-nd = size(q,1);
 
-smax = zeros(1,size(q,2));
+nd = parms.nd;
+nt = mesh.nt;
+
+smax = zeros(1,nt);
 
 for i = 1:3
   normals = squeeze(mesh.normals(:,i,:));
   ql = squeeze(qmid(:,i,:));
+  
+  %keyboard
   qr = zeros(size(ql));
 
   %-------------------------------
@@ -40,10 +43,10 @@ for i = 1:3
   jj = find(mesh.tneigh(i,:)>0);
   nghs = mesh.tneigh(i,jj);
   nghnghs = mesh.tneigh(:,nghs);
-  jjj = [jj;jj;jj];
-  [ii kk] = find(nghnghs == jjj);
+  jjj = repmat(jj,3,1);
+  [ii,~] = find(nghnghs == jjj);
 
-  jn = (jj-1)*3;
+  jn = (jj-1)*nd;
   jnn = 1+jn;
   for dd = 2:nd
     jnn = [jnn ; dd+jn];
@@ -56,6 +59,8 @@ for i = 1:3
     inn = [inn ; dd+in];
   end
   inn = inn(:);
+  
+  %keyboard
   
   qr(jnn) = qmid(inn);
   
@@ -77,7 +82,8 @@ for i = 1:3
   [edgeflux,sm] = feval(parms.edgeFlux,ql,qr,normals,parms);
   smax = max(smax,sm);
   
-  ii = i*ones(1,size(ql,1));
+  ii = i*ones(1,nd);
+  
   flux = flux - edgeflux.*mesh.edgelengths(ii,:);
 end
 
@@ -90,6 +96,6 @@ end
 % Normalise by area of triangles
 %-------------------------------
 mesh = fvmAreaTri(mesh,'ifnecessary');
-for i = 1:3
+for i = 1:nd
   flux(i,:) = flux(i,:)./mesh.area;
 end

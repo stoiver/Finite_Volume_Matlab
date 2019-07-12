@@ -52,21 +52,24 @@ while time < tInterval(2)
   dtime = min(max(min(dx./smax,DT),dtmin),tInterval(2)-time);
   dtime = min(dtime,[],2);
   qnew = q + dtime*flux;
-  
+
   %-----------------
   % Fix negative heights
   %-----------------
   ipos = qnew(1,:) >= 0;
-  qnew = qnew.*ipos;
+  qnew(1:end,:) = qnew(1:end,:).*ipos;
   
   %--------------------------------
   % Based on advection update 
   % refine/coarsen mesh
   %--------------------------------
-  [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
-  [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
- 
-  %q = qnew;
+  if parms.adapt == 1
+    [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
+    [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
+  else
+      q = qnew;
+  end
+  
   %---------------------------------
   % Now do slope using explicit method
   %---------------------------------

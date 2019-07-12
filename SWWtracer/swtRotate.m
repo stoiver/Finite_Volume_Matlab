@@ -1,4 +1,4 @@
-function [Tq] = swRotate(q,normals)
+function [Tq] = swtRotate(q,normals)
 %
 % function [Tq] = swRotate(q,normals)
 %
@@ -7,12 +7,10 @@ function [Tq] = swRotate(q,normals)
 %
 
 
-Tq = zeros(size(q));
+Tq = q;
 
 n1 = normals(1,:);
 n2 = normals(2,:);
-
-Tq(1,:) = q(1,:);
 
 Tq(2,:) =  n1.*q(2,:) + n2.*q(3,:);
 Tq(3,:) = -n2.*q(2,:) + n1.*q(3,:);

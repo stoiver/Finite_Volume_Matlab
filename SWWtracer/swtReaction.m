@@ -1,4 +1,4 @@
-function [dq] = swReaction(t,q,flag,parms,mesh)
+function [dq] = swtReaction(t,q,flag,parms,mesh)
 %
 % function [dq] = swReaction(t,q,flag,parms,mesh)
 %

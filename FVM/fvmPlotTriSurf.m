@@ -56,7 +56,7 @@ else
   qmid       = feval(parms.phiInterpolator, mesh,parms,q);
   [qmid, qv] = feval(parms.phiLimiter, mesh,parms,q,qmid);
   
-  C = squeeze(qv(1,:,:));
+  C = squeeze(qv(dim,:,:));
   
   X = [mesh.p(1,mesh.t(1,:)) ; mesh.p(1,mesh.t(2,:)) ; mesh.p(1,mesh.t(3,:)) ];
   Y = [mesh.p(2,mesh.t(1,:)) ; mesh.p(2,mesh.t(2,:)) ; mesh.p(2,mesh.t(3,:)) ];
