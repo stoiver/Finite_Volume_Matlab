@@ -101,7 +101,6 @@ while time < tInterval(2),
   if i > ODE_MAXIT
     fprintf('\n')
     disp('Max no of sub time steps, Reset i to continue')
-    keyboard
   end
 end
 

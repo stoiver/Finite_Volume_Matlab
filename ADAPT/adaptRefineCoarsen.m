@@ -1,4 +1,4 @@
-function [qnew, meshnew]  = adaptRefineCoarsen(q,mesh,parms,indicator,tol_indicator)
+function [q1, meshnew]  = adaptRefineCoarsen(q,mesh,parms,indicator,tol_indicator)
 %
 % [q, mesh]  = adaptRefineCoarsen(q,mesh,parms,dtime,qnew)
 %
@@ -17,43 +17,59 @@ indicator = indicator';
 % for refinement then refine and 
 % interpolate to refined mesh
 %----------------------------------
-refineElem  = find((abs(indicator) > tol_indicator) .* ...
-    (mesh.area' >= parms.init_res/64) );
-
-fprintf('|refineElem| = %g \n',size(refineElem,1));
-% disp('size refineElem')
-% size(refineElem)
-
 node = mesh.p';
 elem = mesh.t';
+q0 = q';
 
-[node,elem,~,~,tree] = bisect(node, elem, refineElem);
-
-ntf = size(elem,1);  %number of triangles after refinement
-%fprintf('refine ntf = %g \n',ntf);
-
-qref = zeros(ntf,nd);
-for ii = 1:nd
-    qref(:,ii) = eleminterpolate(q(ii,:)',tree);
+for i=1:1
+    mesh1 = fvmMesh(node,elem,'radial');
+    
+    refineElem  = find((abs(indicator) > tol_indicator) .* ...
+        (mesh1.area' >= parms.init_res/parms.refine_limit) );
+    
+    %fprintf('|refineElem| = %g \n',size(refineElem,1));
+    % disp('size refineElem')
+    % size(refineElem)
+    
+    [node,elem,~,~,tree] = bisect(node, elem, refineElem);
+    
+    ntf = size(elem,1);  %number of triangles after refinement
+    %fprintf('refine ntf = %g \n',ntf);
+    
+    q1 = zeros(ntf,nd);
+    for ii = 1:nd
+        q1(:,ii) = eleminterpolate(q0(:,ii),tree);
+    end
+    indicator = eleminterpolate(indicator,tree);
+    
+    q0 = q1;
 end
-indicator = eleminterpolate(indicator,tree);
 
 %----------------------------------
-% Determine triangles to be flagged 
-% for refinement then refine and 
-% interpolate to refined mesh
+% Determine triangles which can
+% be coarsened. let's do it a couple
+% of times to clear out extra triangles
 %----------------------------------
-coarsenElem = find(abs(indicator) < 0.2*tol_indicator);
-fprintf('|coarsenElem| = %g \n',size(coarsenElem,1));
-
-[node,elem,~,~,tree] = coarsen(node,elem, coarsenElem, []);
-
-ntc = size(elem,1);  %number of triangles after coarsen
-qnew = zeros(nd,ntc);
-for ii = 1:nd
-    qnew(ii,:) = eleminterpolate(qref(:,ii),tree)';
+for i =1:1
+    mesh1 = fvmMesh(node,elem,'radial');
+    
+    coarsenElem = find( (abs(indicator) < parms.coarsen_factor*tol_indicator) .* ...
+        (mesh1.area' <= parms.init_res*parms.coarsen_limit) );
+    
+    %fprintf('|coarsenElem| = %g \n',size(coarsenElem,1));
+    
+    [node,elem,~,~,tree] = coarsen(node,elem, coarsenElem, []);
+    
+    ntc = size(elem,1);  %number of triangles after coarsen
+    q1 = zeros(ntc,nd);
+    for ii = 1:nd
+        q1(:,ii) = eleminterpolate(q0(:,ii),tree)';
+    end
+    indicator = eleminterpolate(indicator,tree);
+    q0 = q1;
 end
-%indicator = eleminterpolate(indicator,tree);
+
+q1 = q1';
 
 % Create new mesh
 meshnew = fvmMesh(node,elem,'radial');

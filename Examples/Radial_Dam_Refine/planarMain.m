@@ -1,9 +1,9 @@
-function [parms,meshT,qT] = radialMain(DT,finalT)
+function [parms,meshT,qT] = planarMain(DT,finalT)
 %
 % Main function to setup evolution of
 % initial data defined in radialMesh.m
 %
-%  function [parms,meshT,qT] = radialMain(DT,finalT)
+%  function [parms,meshT,qT] = planarMain(DT,finalT)
 %
 % Setup the parms for the problem by editting this file.
 %
@@ -43,20 +43,20 @@ else
 end
 parms.reactionFunct = 'swtReaction';
 
-parms.beta = 0.9;
+parms.beta = 0.5;
 parms.delta = 1e-5;
 
 parms.adapt = 1;
-parms.coarsen_factor = 0.25;
-parms.refine_factor = 1;
+parms.coarsen_factor = 0.4;
+parms.refine_factor = 1.0;
 parms.refine_limit = 128;
-parms.coarsen_limit = 16;
-parms.max_indicator = 1.0;
+parms.coarsen_limit = 1;
+parms.max_indicator = 0.01;
 
 %-------------------------------------
 % Paraters to change initial conditions
 %-------------------------------------
-parms.initialMesh = 'radialMesh';
+parms.initialMesh = 'planarMesh';
 parms.resolution = [50, 50];          % Resolution of grid using swInit* 
 parms.lengths = [50, 50];             % Lengths of rectangular region using swInit*
 
@@ -76,7 +76,7 @@ parms.dtmin = 1e-7;
 % Graphics paramters
 %-------------------------------------
 parms.graphics = 1;
-parms.smooth = 1;
+parms.smooth = 0;
 parms.plotdim = 1;
 fvmSetPlotRange([0 ; 2]);
 

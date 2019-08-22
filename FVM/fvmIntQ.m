@@ -14,6 +14,8 @@ end
 mesh = fvmAreaTri(mesh);
 
 n = size(q,1);
+am = zeros(n,1);
+
 for i = 1:n
   am(i) = sum(q(i,:).*mesh.area);
 end

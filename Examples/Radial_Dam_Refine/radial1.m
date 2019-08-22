@@ -1,4 +1,4 @@
-function [mesh,q] = csp1(parms)
+function [mesh,q] = radial1(parms)
 %
 % function [mesh,q] = csp1(parms)
 % 
@@ -19,7 +19,7 @@ fvmSetPlotScale([0 1])
 fvmSetPlotRange([0 1])
 
 %-------------------
-% Set up transmissive boundaries
+% Setup as FVM mesh
 %-------------------
 mesh = fvmNeigh(mesh);
 

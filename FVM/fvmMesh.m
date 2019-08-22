@@ -11,7 +11,7 @@ if nargin < 2
 end
 
 %-----------------------------
-% chaeck size of node and elem
+% check size of node and elem
 %-----------------------------
 if size(elem,1) == 3
     mesh.t = elem;

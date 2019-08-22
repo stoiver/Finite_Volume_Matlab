@@ -29,7 +29,7 @@ parms.phiLimiter = 'swLimiter1';
 parms.phiInterpolator = 'fvmPWL0';
 parms.reactionFunct = 'swReaction';
 
-parms.beta = 0.0;
+parms.beta = 0.9;
 parms.delta = 1e-5;
 
 %-------------------------------------
@@ -49,7 +49,7 @@ parms.g = 9.8;
 %-------------------------------------
 parms.DT = DT;
 parms.finalT = finalT;
-parms.dtmin = 1e-16;
+parms.dtmin = 1e-7;
 parms.odetype = 'odeEuler1';
 
 parms.graphics = 1;

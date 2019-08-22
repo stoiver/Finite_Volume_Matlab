@@ -23,7 +23,7 @@ maxinc = parms.inc;
 for inc = 1:maxinc
   q = qT{inc};
   if iscell(mT)
-      m = mT{inc}
+      m = mT{inc};
   end
   
   time = (inc-1)*parms.DT;

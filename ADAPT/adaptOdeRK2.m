@@ -51,7 +51,7 @@ while time < tInterval(2)
   % refine/coarsen mesh
   %--------------------------------
   if parms.adapt == 1
-    [indicator, tol_indicator] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
+    [indicator,tol_indicator,qnew] = adaptIndicatorNEQ(q,mesh,parms,dtime,qnew);
     [q, mesh]  = adaptRefineCoarsen(qnew,mesh,parms, indicator, tol_indicator);
   else
       q = qnew;

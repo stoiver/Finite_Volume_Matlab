@@ -1,4 +1,4 @@
-function [mesh,q] = radialMesh(parms)
+function [mesh,q] = planarMesh(parms)
 
 g = parms.g;
 
@@ -24,11 +24,15 @@ mesh = fvmMesh(node,elem,'square');
 mesh.elevation = zeros(1,mesh.np);
 mesh.friction  = zeros(1,mesh.np);
 
+%-------------------------
+% Setup initial quantity
+%-------------------------
 centroid = fvmCentroid(mesh);
-disk = (centroid(1,:).^2 + centroid(2,:).^2 ) < 0.25^2;
 
+left = centroid(1,:)< 0.0;
+right = 1.0 - left;
 
-h = (1-disk)*0.2 + disk*0.5;
+h = left*0.5 + right*0.2;
 u = zeros(size(h));
 v = zeros(size(h));
 e = 0.5*(h.*(u.^2 + v.^2) + g*h.^2);
@@ -41,8 +45,6 @@ q(3,:) = h.*v;
 q(4,:) = e;
 
 
-fvmSetPlotScale([0 1])
-fvmSetPlotRange([0 1])
-
-
+fvmSetPlotScale([0 2])
+fvmSetPlotRange([0 2])
 end
