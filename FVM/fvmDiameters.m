@@ -46,4 +46,10 @@ d2 = sum(cm2.^2,1).^(0.5);
 d3 = sum(cm3.^2,1).^(0.5);
 
 mesh.diameters = min(min(d1,d2),d3);
+[~, nt] = size(t);
+[~, np] = size(p);
+mesh.np = np;
+mesh.nt = nt;
+
+
 

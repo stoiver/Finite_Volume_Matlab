@@ -3,21 +3,20 @@ function fvmPrint(str,arg1,arg2,arg3)
 %
 % fvm output routine
 %
-% FVM_PARAMETERS(1) = 1,  no output
-% FVM_PARAMETERS(1) = 2,  output
+% FVM_PARAMETERS(1) = 0,  no output
+% FVM_PARAMETERS(1) = 1,  output
 %
 
 global FVM_PARAMETERS
 
-
 switch FVM_PARAMETERS(1)
-  case 1,
+  case 0,
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     % No output
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     return
 
-  case 2,
+  case 1,
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     % Output
     %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,8 +40,8 @@ switch FVM_PARAMETERS(1)
 
   otherwise
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % MG_PARAMETERS(4) incorrectly set
+    % FVM_PARAMETERS(1) incorrectly set
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    error('MG_PARAMETERS(4) incorrectly set');
+    error('FVM_PARAMETERS(1) incorrectly set');
 end
 

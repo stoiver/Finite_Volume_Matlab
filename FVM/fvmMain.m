@@ -12,10 +12,7 @@ function [parms,mesh,qT] = fvmMain(parms,mesh,qT)
 global FVM_PARAMETERS
 global FVM_K
 global ODE_MAXIT
-
-ODE_MAXIT = 1000;
-FVM_PARAMETERS(1)= 1;
-FVM_K = 0;
+global FVM_VIEW
 
 
 if nargin < 1
@@ -25,6 +22,12 @@ end
 if nargin == 2
   error('Need 1 or 3 arguments')
 end
+
+
+ODE_MAXIT = 1000;
+FVM_PARAMETERS(1)= parms.printing;
+FVM_K = 0;
+
 
 %----------------------------------------
 % Computation start
@@ -68,12 +71,15 @@ rmin = minq;
 rmax = maxq;
 rint = intq;
 
+if parms.printing > 0
+  fprintf('TIME %g \n',startT)
+end
+if parms.printing > 1
+  fprintf('  IntQ = %12.8e \n',intq)
+  fprintf('  max value = %g \n',maxq)
+  fprintf('  min value = %g \n',minq)
+end
 
-
-fprintf('TIME %g \n',startT)
-fprintf('  IntQ = %12.8e \n',intq)
-fprintf('  max value = %g \n',maxq)
-fprintf('  min value = %g \n',minq)
 
 if parms.graphics
   fvmPlotTriSurf(mesh,q,parms);
@@ -108,10 +114,14 @@ for time = startT+DT:DT:finalT
    rint = [rint intq];
    rtime =[rtime time];
    
-   fprintf('TIME %g \n',time)
-   fprintf('  IntQ = %12.8e \n',intq)
-   fprintf('  max value = %g \n',maxq)
-   fprintf('  min value = %g \n',minq)
+   if parms.printing > 0
+      fprintf('TIME %g \n',time)
+   end
+   if parms.printing > 1
+      fprintf('  IntQ = %12.8e \n',intq)
+      fprintf('  max value = %g \n',maxq)
+      fprintf('  min value = %g \n',minq)
+   end
    
    if parms.graphics
      fvmPlotTriSurf(mesh,q,parms);

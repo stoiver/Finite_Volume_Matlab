@@ -28,7 +28,7 @@ end
 % Computation start
 %---------------------------------------
 fvmPrint('Start of swFluxFunct \n');
-fprintf('.');
+fvmPrint('.');
 
 %---------------------------------------
 % The concentration at the midpoints of the

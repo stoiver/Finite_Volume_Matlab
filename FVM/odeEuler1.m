@@ -21,7 +21,7 @@ end
 DT = parms.DT;
 dtmin = parms.dtmin;
 
-fprintf('\n');
+fvmPrint('\n');
 %-------------------------------------
 % Ensure times are consistent with dt
 % and tInterval
@@ -38,7 +38,7 @@ flag = [];
 %--------------------------------------
 time = tInterval(1);
 i = 0;
-while time < tInterval(2),
+while time < tInterval(2)
   i = i+1;
   %---------------------------------
   % First do Advection
@@ -120,4 +120,4 @@ end
 %   q = q + dtime*flux;
 %end      
 
-fprintf('\n');
+fvmPrint('\n');
