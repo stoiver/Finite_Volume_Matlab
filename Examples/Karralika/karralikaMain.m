@@ -52,6 +52,8 @@ parms.dtmin = 1e-16;
 parms.odetype = 'odeEuler1';
 
 parms.graphics = 1;
+parms.printing = 0;
+parms.plotmesh = 1;
 
 fvmSetPlotRange([630 ; 685]);
 %------------------------------------

@@ -10,7 +10,7 @@ function [mesh] = fvmNormals(mesh,flag)
 %            the calculation is done
 %
 
-if nargin ~= 1 & nargin ~= 2 
+if nargin ~= 1 && nargin ~= 2
   error('Need 1 or 2 arguments')
 end
 
@@ -19,7 +19,7 @@ if nargin == 1
 end
 
 if strcmp(flag,'ifnecessary')
-  if ~isempty(mesh.normals)&~isempty(mesh.edgelengths)
+  if ~isempty(mesh.normals) && ~isempty(mesh.edgelengths)
     return
   end
 end

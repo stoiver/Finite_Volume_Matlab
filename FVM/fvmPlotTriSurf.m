@@ -8,75 +8,57 @@ function fvmPlotTriSurf(mesh,q,parms,fig_no)
 
 if nargin < 4
   fig_no = 1;
-end 
+end
+
+graphics_toolkit('gnuplot')
 
 if nargin < 3
   parms = fvmSetParmsStruct;
   parms.plotdim = 1;
-  parms.beta = 1;
   parms.smooth = 1;
-  parms.phiInterpolator = 'fvmPWL1';
-  parms.phiLimiter = 'fvmLimiter';
-  
 end
 
 dim = parms.plotdim;
-beta = parms.beta;
-smooth = parms.smooth;
 
-xmin = min(mesh.p(1,:),[],2);
-xmax = max(mesh.p(1,:),[],2);
-
-ymin = min(mesh.p(2,:),[],2);
-ymax = max(mesh.p(2,:),[],2);
-
-
-if smooth == 1
-  pq = fvmTdataToPdata(mesh,q(dim,:));
-  if parms.plotelevation
-     pqe = pq+mesh.elevation;
-  else
-     pqe = pq;
-  end
-
-  figure(fig_no)
-  
-  trisurf(mesh.t',mesh.p(1,:),mesh.p(2,:),pqe,pq,'EdgeColor','none')
-  shading interp
-
-  light('Position',[0 -2 1])
-  lighting phong
-  fvmSetPlot;
-  range = fvmGetPlotRange;
-  axis([xmin, xmax, ymin,ymax, range(1), range(2)]);
-  pbaspect([1 1 1]);
-  drawnow
-    
-else
-  qmid       = feval(parms.phiInterpolator, mesh,parms,q);
-  [qmid, qv] = feval(parms.phiLimiter, mesh,parms,q,qmid);
-  
-  C = squeeze(qv(1,:,:));
-  
-  X = [mesh.p(1,mesh.t(1,:)) ; mesh.p(1,mesh.t(2,:)) ; mesh.p(1,mesh.t(3,:)) ];
-  Y = [mesh.p(2,mesh.t(1,:)) ; mesh.p(2,mesh.t(2,:)) ; mesh.p(2,mesh.t(3,:)) ];
-  Z = [mesh.elevation(mesh.t(1,:)) ; mesh.elevation(mesh.t(2,:)) ;...
-    mesh.elevation(mesh.t(3,:)) ]+C;
-  
-  figure(fig_no)
-  clf;
-  patch(X,Y,Z,C,'FaceColor','interp','EdgeColor','none');
-
-  light('Position',[0 -2 1])
-  lighting none
-  
-  fvmSetPlot;
-  range = fvmGetPlotRange;
-  axis([xmin, xmax, ymin,ymax, range(1), range(2)]);
-  pbaspect([1 1 1]);
-  drawnow
+if ~isfield(parms, 'plotmesh')
+  parms.plotmesh = 0;
 end
 
+xmin = min(mesh.p(1,:));
+xmax = max(mesh.p(1,:));
+ymin = min(mesh.p(2,:));
+ymax = max(mesh.p(2,:));
 
+%------------------------------------------
+% Triangle centroid coordinates and values
+%------------------------------------------
+cx = (mesh.p(1,mesh.t(1,:)) + mesh.p(1,mesh.t(2,:)) + mesh.p(1,mesh.t(3,:))) / 3;
+cy = (mesh.p(2,mesh.t(1,:)) + mesh.p(2,mesh.t(2,:)) + mesh.p(2,mesh.t(3,:))) / 3;
+cq = q(dim,:);
 
+%------------------------------------------
+% Interpolate to regular grid for contourf
+%------------------------------------------
+npts = 200;
+xi = linspace(xmin, xmax, npts);
+yi = linspace(ymin, ymax, npts);
+[XI, YI] = meshgrid(xi, yi);
+ZI = griddata(cx, cy, cq, XI, YI);
 
+figure(fig_no)
+clf;
+ZI(isnan(ZI)) = 0;
+pcolor(XI, YI, ZI);
+shading interp
+fvmSetPlot;
+if parms.plotmesh
+  hold on
+  ex = mesh.p(1, [mesh.t(1,:); mesh.t(2,:); mesh.t(3,:); mesh.t(1,:)]);
+  ey = mesh.p(2, [mesh.t(1,:); mesh.t(2,:); mesh.t(3,:); mesh.t(1,:)]);
+  plot(ex, ey, 'Color', [0.4 0.4 0.4], 'LineWidth', 0.3)
+  hold off
+end
+view(2)
+rotate3d off
+axis([xmin xmax ymin ymax])
+drawnow

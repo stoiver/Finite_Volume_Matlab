@@ -1,4 +1,4 @@
-function fvmSetPlotScale(range)
+function fvmSetPlotRange(range)
 
 global FVM_GRANGE
 

@@ -1,11 +1,9 @@
-function fvmSetPlotScale(scale)
+function fvmSetPlotScale(range)
 
 global gscale
 
 if nargin<1
-  gscale = [0 11];
+  error('range not supplied')
 else
-  gscale = scale;
+  gscale = range;
 end
-
-

@@ -17,7 +17,7 @@ function [mesh] = fvmNeigh(mesh,flag)
 %            the calculation is done
 %
 
-if nargin ~= 1 & nargin ~= 2 
+if nargin ~= 1 && nargin ~= 2
   error('Need 1 or 2 arguments')
 end
 
